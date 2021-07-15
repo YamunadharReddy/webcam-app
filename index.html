@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+   <link rel="stylesheet" href="code/css/style.css">
+   <link rel="stylesheet" href="code/js/app.js">
+    <title>IMPRESSIVE CAMS</title>  
+   
+</head>
+ 
+<body>
+    <div class="contentarea">
+        
+        <div class="camera">
+            <video id="video">Video stream not available.</video>
+        </div>
+       
+        <canvas id="canvas"></canvas>
+        
+        <div class="output">
+            <img id="photo" alt="The screen capture will appear in this box.">
+        </div>
+        <div ><button id="capture"></button></div>
+    </div>
+
+
+     <!-- trying to add filters, lets see if works or not-->
+    <select  id="photo-filter">
+        <option value="none">Normal</option>
+        <option value="grayscale(100%)">grayscale</option>
+        <option value="sepia(100%)">Sepia</option>
+        <option value="invert(100%)">Invert</option>
+        <option value="hue-rotate(90deg)">Hue-rotate</option>
+        <option value="blur(10px)">Blur</option>
+        <option value="contrast">Contrast</option>
+    </select>
+
+<script>
+    (function() {
+
+var width = 320; // We will scale the photo width to this
+var height = 0; // This will be computed based on the input stream
+
+var streaming = false;
+var filter  = null;
+var video = null;
+var canvas = null;
+var photo = null;
+var capture = null;
+
+function startup() {
+    video = document.getElementById('video');
+    canvas = document.getElementById('canvas');
+    photo = document.getElementById('photo');
+    capture = document.getElementById('capture');
+    const photoFilter = document.getElementById("photo-filter")
+
+    navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+        })
+        .then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function(err) {
+            console.log("An error occurred: " + err);
+        });
+
+    video.addEventListener('canplay', function(ev) {
+        if (!streaming) {
+
+            height = video.videoHeight / (video.videoWidth / width);
+
+            if (isNaN(height)) {
+                height = width / (4 / 3);
+            }
+                          //setting video and canvas height
+            video.setAttribute('width', width);
+            video.setAttribute('height', height);
+            canvas.setAttribute('width', width);
+            canvas.setAttribute('height', height);
+            streaming = true;
+        }
+    }, false);
+    
+    capture.addEventListener('click', function(ev) {
+        //event listener to click the button
+        takepicture();
+        downloadCanvas()
+
+        ev.preventDefault();
+    }, false);
+
+    clearphoto();
+
+
+
+    photoFilter.addEventListener('change',function(ev){
+  filter = ev.target.value;
+  video.style.filter = filter;
+  e.preventDefault();
+
+});
+} 
+
+
+
+function clearphoto() {
+    var context = canvas.getContext('2d');
+    context.fillStyle = "#AAA";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    var data = canvas.toDataURL('image/png');
+    photo.setAttribute('src', data);
+}
+
+ function downloadImage () {
+var a = document.createElement('a');
+a.setAttribute('download','.png');
+a.setAttribute('href', datauri);
+
+}
+
+function takepicture() {
+    //create canvas
+    var context = canvas.getContext('2d');
+    if (width && height) {
+        canvas.width = width;
+        canvas.height = height;
+        // draw an image of the video on canvas by passing "video" to DrawImage
+        context.drawImage(video, 0, 0, width, height);
+           // create an image of canvas.    i found this code on internet understoof this code and executed
+        var data = canvas.toDataURL('image/png');
+       
+        photo.setAttribute('src', data);
+      
+        // addig filter to photos
+        photo.style.filter = filter;
+        
+    } else {
+        clearphoto();
+    }
+}
+
+    function downloadCanvas(){  
+        // get canvas data  
+        var image = canvas.toDataURL();  
+    
+        // create temporary link  
+        var tmpLink = document.createElement( 'a' );  
+        tmpLink.download = 'Yamu.png'; // set the name of the download file 
+        tmpLink.href = image;  
+    
+        // temporarily add link to body and initiate the download  
+        document.body.appendChild( tmpLink );  
+        tmpLink.click();  
+        document.body.removeChild( tmpLink );  
+    }
+
+    window.addEventListener('load', startup, false);
+})();
+</script>
+
+  
+</body>
+
+
+</html>

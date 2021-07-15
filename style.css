@@ -1,0 +1,63 @@
+*{
+    margin:0;
+    padding:0;
+}
+body{
+    background-color: black;
+}
+#video {
+   
+    height: 700px;
+    width: 900px;
+    top: 20px;
+    margin-left: 100px;   
+}
+
+#photo {
+   
+    width: 150px;
+    height: 150px;
+    border-radius: 30%;
+    border: 2px solid white;
+    margin: 20px;
+    filter: grayscale(50%);
+    
+}
+
+#canvas {
+    display: none;
+}
+
+.camera {
+    
+   align-items: center;
+    display: inline-block;
+}
+
+.output {
+    
+    display: block;
+    float:right;
+
+   
+}
+
+#capture {
+    height: 60px;
+    width:60px;
+    display: block;
+    position: absolute;
+    left:100em;
+    bottom: 36px;
+    margin-bottom: 220px;
+    align-self: center;
+    float:right;
+    border-radius: 50%;
+    background-color:rgb(112, 110, 110);
+    pointer-events: auto;
+   z-index: 2;
+    cursor: pointer;
+    background-image: url('img/ic_photo_camera_white_48px.svg');
+    background: transparent;
+    background: url('https://api.iconify.design/fluent:camera-28-filled.svg?color=white') no-repeat center center / contain;
+}
